@@ -13,6 +13,8 @@ public class WGraphTest {
 			for(Integer num : out) {
 				System.out.println("" + num);
 			}
+			System.out.println("Graph State:");
+			System.out.println(wc.toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -36,6 +38,8 @@ public class WGraphTest {
 			for(Integer num : out) {
 				System.out.println("" + num);
 			}
+			System.out.println("Graph State:");
+			System.out.println(wc.toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,6 +66,8 @@ public class WGraphTest {
 			for(Integer num : out) {
 				System.out.println("" + num);
 			}
+			System.out.println("Graph State:");
+			System.out.println(wc.toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

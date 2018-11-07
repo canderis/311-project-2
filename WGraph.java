@@ -32,6 +32,9 @@ public class WGraph {
         public void addEdge(Edge e){
         	this.edges.add(e);
         }
+        public void removeEdge(Edge e) {
+        	this.edges.remove(e);
+        }
         
     }
     private class Edge{
@@ -123,15 +126,25 @@ public class WGraph {
     public ArrayList<Integer> V2S(int ux, int uy, ArrayList<Integer> S){
     	Vertex src = this.lookup.get(""+ux+uy);
     	
+    	HashMap<Vertex, Edge> dummyEdges = new HashMap<Vertex, Edge>(S.size()/2);
     	Vertex s = new Vertex(-1, -1);
     	this.lookup.put("-1-1", s);
-    	for(int i = 0; i < S.size(); i+=2) {
+    	for(int i = 0; i < S.size(); i+=2) {    		
     		Edge e = new Edge(s, 0 );
-    		this.lookup.get(""+S.get(i)+S.get(i+1)).addEdge(e);
+    		Vertex v = this.lookup.get(""+S.get(i)+S.get(i+1));
+    		dummyEdges.put(v, e);
+    		v.addEdge(e);
     	}
     	
     	ArrayList<Vertex> path = dijkstra(src, s);
     	path.remove(path.size()-1);
+    	
+    	this.lookup.remove("-1-1");
+    	
+    	for(Vertex v : dummyEdges.keySet()) {
+    		v.removeEdge(dummyEdges.get(v));
+    	}
+
     	
     	return buildOutput(path);
     }
@@ -153,10 +166,13 @@ public class WGraph {
     	}
     	
     	Vertex s2 = new Vertex(-2, -2);
+    	HashMap<Vertex, Edge> dummyEdges = new HashMap<Vertex, Edge>(S2.size()/2);
     	this.lookup.put("-2-2", s2);
     	for(int i = 0; i < S2.size(); i+=2) {
     		Edge e = new Edge(s2, 0 );
-    		this.lookup.get(""+S2.get(i)+S2.get(i+1)).addEdge(e);
+    		Vertex v = this.lookup.get(""+S2.get(i)+S2.get(i+1));
+    		dummyEdges.put(v, e);
+    		v.addEdge(e);
     	}
     	
     	ArrayList<Vertex> path = dijkstra(s1, s2);
@@ -164,7 +180,28 @@ public class WGraph {
     	path.remove(path.size()-1);
     	path.remove(0);
     	
+    	this.lookup.remove("-1-1");
+    	this.lookup.remove("-2-2");
+    	
+    	for(Vertex v : dummyEdges.keySet()) {
+    		v.removeEdge(dummyEdges.get(v));
+    	}
+    	
+    	
     	return buildOutput(path);
+    }
+    
+    public String toString() {
+    	String s = "";
+    	for(String key : this.lookup.keySet()) {
+    		s += key;
+    		for(Edge e: this.lookup.get(key).edges) {
+    			s += "\t" + e.dst.x + e.dst.y;
+    		}
+    		s+= "\n";
+    	}
+    	
+    	return s;
     }
     
     

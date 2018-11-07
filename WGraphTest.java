@@ -8,7 +8,11 @@ public class WGraphTest {
 
         try {
 			WGraph wc = new WGraph("testGraph.txt");
-			wc.V2V(1, 2, 7, 8);
+			ArrayList<Integer> out = wc.V2V(1, 2, 7, 8);
+			System.out.println("v2v");
+			for(Integer num : out) {
+				System.out.println("" + num);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -27,7 +31,11 @@ public class WGraphTest {
 			ArrayList<Integer> S = new ArrayList<Integer>();
 			S.add(7);
 			S.add(8);
-			wc.V2S(1, 2, S);
+			ArrayList<Integer> out = wc.V2S(1, 2, S);
+			System.out.println("v2s");
+			for(Integer num : out) {
+				System.out.println("" + num);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -49,7 +57,11 @@ public class WGraphTest {
 			ArrayList<Integer> S2 = new ArrayList<Integer>();
 			S2.add(7);
 			S2.add(8);
-			wc.S2S(S1, S2);
+			ArrayList<Integer> out = wc.S2S(S1, S2);
+			System.out.println("s2s");
+			for(Integer num : out) {
+				System.out.println("" + num);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

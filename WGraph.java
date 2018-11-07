@@ -5,7 +5,7 @@ import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class WGraph {
-	public class Tuple<X, Y> { 
+	private class Tuple<X, Y> { 
 		public final X x; 
 		public final Y y; 
 		public Tuple(X x, Y y) { 
@@ -102,13 +102,82 @@ public class WGraph {
     //       i-th and i+1-th integers in the array represent
     //       the x-coordinate and y-coordinate of the i/2-th vertex
     //       in the returned path (path is an ordered sequence of vertices)
-    ArrayList<Integer> V2V(int ux, int uy, int vx, int vy){
+    public ArrayList<Integer> V2V(int ux, int uy, int vx, int vy){
     	Vertex src = this.lookup.get(""+ux+uy);
     	Vertex dst = this.lookup.get(""+vx+vy);
 
-    	dijkstra(src, dst);
+    	return buildOutput(dijkstra(src, dst));
+    }
+    
+    
 
-    	return new ArrayList<Integer>();
+
+    // pre:  ux, uy are valid coordinates of vertex u from the graph
+    //       S represents a set of vertices.
+    //       The S arraylist contains even number of intergers2
+    //       for any even i,
+    //       i-th and i+1-th integers in the array represent
+    //       the x-coordinate and y-coordinate of the i/2-th vertex
+    //       in the set S.
+    // post: same structure as the last method’s post.
+    public ArrayList<Integer> V2S(int ux, int uy, ArrayList<Integer> S){
+    	Vertex src = this.lookup.get(""+ux+uy);
+    	
+    	Vertex s = new Vertex(-1, -1);
+    	this.lookup.put("-1-1", s);
+    	for(int i = 0; i < S.size(); i+=2) {
+    		Edge e = new Edge(s, 0 );
+    		this.lookup.get(""+S.get(i)+S.get(i+1)).addEdge(e);
+    	}
+    	
+    	ArrayList<Vertex> path = dijkstra(src, s);
+    	path.remove(path.size()-1);
+    	
+    	return buildOutput(path);
+    }
+
+
+
+
+    // pre:  S1 and S2 represent sets of vertices (see above for
+    //       the representation of a set of vertices as arrayList)
+    // post: same structure as the last method’s post.
+    public ArrayList<Integer> S2S(ArrayList<Integer> S1, ArrayList<Integer> S2){
+    	//Vertex src = this.lookup.get(""+ux+uy);
+    	
+    	Vertex s1 = new Vertex(-1, -1);
+    	this.lookup.put("-1-1", s1);
+    	for(int i = 0; i < S1.size(); i+=2) {
+    		Edge e = new Edge(this.lookup.get(""+S1.get(i)+S1.get(i+1)), 0 );
+    		s1.addEdge(e);
+    	}
+    	
+    	Vertex s2 = new Vertex(-2, -2);
+    	this.lookup.put("-2-2", s2);
+    	for(int i = 0; i < S2.size(); i+=2) {
+    		Edge e = new Edge(s2, 0 );
+    		this.lookup.get(""+S2.get(i)+S2.get(i+1)).addEdge(e);
+    	}
+    	
+    	ArrayList<Vertex> path = dijkstra(s1, s2);
+    	
+    	path.remove(path.size()-1);
+    	path.remove(0);
+    	
+    	return buildOutput(path);
+    }
+    
+    
+
+    private ArrayList<Integer> buildOutput(ArrayList<Vertex> path){
+    	ArrayList<Integer> output = new ArrayList<Integer>(path.size() * 2);
+    	
+    	for(Vertex v: path) {
+    		output.add(v.x);
+    		output.add(v.y);
+    	}
+    	
+    	return output;
     }
     
     private ArrayList<Vertex> dijkstra(Vertex src, Vertex dst) {
@@ -156,64 +225,11 @@ public class WGraph {
     	ArrayList<Vertex> path = new ArrayList<Vertex>();
     	while(next != dst) {
     		next = parent.get(next);
-    		System.out.println("" + next.x + next.y);
     		path.add(next);
     	}
     	
     	return path;
     	
-    }
-
-
-    // pre:  ux, uy are valid coordinates of vertex u from the graph
-    //       S represents a set of vertices.
-    //       The S arraylist contains even number of intergers2
-    //       for any even i,
-    //       i-th and i+1-th integers in the array represent
-    //       the x-coordinate and y-coordinate of the i/2-th vertex
-    //       in the set S.
-    // post: same structure as the last method’s post.
-    ArrayList<Integer> V2S(int ux, int uy, ArrayList<Integer> S){
-    	Vertex src = this.lookup.get(""+ux+uy);
-    	
-    	Vertex s = new Vertex(-1, -1);
-    	this.lookup.put("-1-1", s);
-    	for(int i = 0; i < S.size(); i+=2) {
-    		Edge e = new Edge(s, 0 );
-    		this.lookup.get(""+S.get(i)+S.get(i+1)).addEdge(e);
-    	}
-    	
-    	dijkstra(src, s);
-    	
-    	return new ArrayList<Integer>();
-    }
-
-
-
-
-    // pre:  S1 and S2 represent sets of vertices (see above for
-    //       the representation of a set of vertices as arrayList)
-    // post: same structure as the last method’s post.
-    ArrayList<Integer> S2S(ArrayList<Integer> S1, ArrayList<Integer> S2){
-    	//Vertex src = this.lookup.get(""+ux+uy);
-    	
-    	Vertex s1 = new Vertex(-1, -1);
-    	this.lookup.put("-1-1", s1);
-    	for(int i = 0; i < S1.size(); i+=2) {
-    		Edge e = new Edge(this.lookup.get(""+S1.get(i)+S1.get(i+1)), 0 );
-    		s1.addEdge(e);
-    	}
-    	
-    	Vertex s2 = new Vertex(-2, -2);
-    	this.lookup.put("-2-2", s2);
-    	for(int i = 0; i < S2.size(); i+=2) {
-    		Edge e = new Edge(s2, 0 );
-    		this.lookup.get(""+S2.get(i)+S2.get(i+1)).addEdge(e);
-    	}
-    	
-    	dijkstra(s1, s2);
-    	
-    	return new ArrayList<Integer>();
     }
 
 }

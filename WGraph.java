@@ -120,16 +120,16 @@ public class WGraph {
     ArrayList<Integer> V2V(int ux, int uy, int vx, int vy){
     	Vertex src = this.lookup.get(""+ux+uy);
     	Vertex dst = this.lookup.get(""+vx+vy);
-    	dst.setDst();
+//    	dst[0].setDst();
     	
     	//do dijkstra's
-    	dijkstra(src);
+    	dijkstra(src, dst);
     	
-    	dst.resetDst();
+//    	dst.resetDst();
     	return new ArrayList<Integer>();
     }
     
-    private void dijkstra(Vertex src) {
+    private void dijkstra(Vertex src, Vertex dst) {
 //    	1) Initialize distances of all vertices as infinite.
 //
 //    2) Create an empty priority_queue pq.  Every item
@@ -161,6 +161,8 @@ public class WGraph {
     	
     	
     	HashMap<Vertex, Integer> dist = new HashMap<Vertex, Integer>(this.vertCount);
+    	HashMap<Vertex, Vertex> parent = new HashMap<Vertex, Vertex>(this.vertCount);
+    	
     	PriorityQueue<Tuple<Vertex, Integer>> q
     		= new PriorityQueue<Tuple<Vertex, Integer>>
     			(
@@ -170,6 +172,8 @@ public class WGraph {
     	
     	//algo begin
     	dist.put(src, 0);
+    	parent.put(src, null);
+    	
     	q.add(new Tuple<Vertex, Integer>(src, 0));
     	
     	for (Vertex value : this.lookup.values()) {
@@ -192,6 +196,7 @@ public class WGraph {
     			Vertex v = e.dst;
     			if(dist.get(v) > dist.get(u) + e.weight) {
     				dist.replace(v, dist.get(u) + e.weight);
+    				parent.put(v, u);
     				q.add(new Tuple<Vertex, Integer>(v, dist.get(v)));
     			}
     		}
@@ -199,6 +204,11 @@ public class WGraph {
     	
     	for (Vertex key : dist.keySet()) {
     	    System.out.println(""+key.x + key.y + " - " + dist.get(key));
+    	}
+    	Vertex next = dst;
+    	while(next != null) {
+    		System.out.println("" + next.x + next.y);
+    		next = parent.get(next);
     	}
     	
     }

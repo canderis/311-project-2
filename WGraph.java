@@ -260,10 +260,13 @@ public class WGraph {
 
     	Vertex next = null;
     	ArrayList<Vertex> path = new ArrayList<Vertex>();
-    	while(next != dst) {
+    	do {
     		next = parent.get(next);
     		path.add(next);
-    	}
+    		if(next == null) {
+    			return new ArrayList<Vertex>();
+    		}
+    	}while(next != dst);
     	
     	return path;
     	

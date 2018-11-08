@@ -264,4 +264,48 @@ public class WGraphTest {
 
     }
 	
+	@Test
+	public void testGraph2() {
+		try {
+			WGraph wc = new WGraph("testGraph2.txt");
+			ArrayList<Integer> S1 = new ArrayList<Integer>();
+			S1.add(1);
+			S1.add(2);
+			ArrayList<Integer> S2 = new ArrayList<Integer>();
+			S2.add(7);
+			S2.add(8);
+			ArrayList<Integer> out = wc.S2S(S1, S2);
+			System.out.println(out.toString());
+//			ArrayList<Integer> expected = new ArrayList<Integer>();
+//			assertEquals(expected, out);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGraph3() {
+		try {
+			WGraph wc = new WGraph("testGraph3.txt");
+			ArrayList<Integer> S1 = new ArrayList<Integer>();
+			S1.add(1);
+			S1.add(1);
+			S1.add(993);
+			S1.add(1);
+			ArrayList<Integer> S2 = new ArrayList<Integer>();
+			S2.add(1000);
+			S2.add(1);
+			S2.add(997);
+			S2.add(1);
+			ArrayList<Integer> out = wc.S2S(S1, S2);
+			System.out.println(out.toString());
+//			ArrayList<Integer> expected = new ArrayList<Integer>();
+//			assertEquals(expected, out);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }

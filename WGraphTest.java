@@ -163,8 +163,8 @@ public class WGraphTest {
 			ArrayList<Integer> expected = new ArrayList<Integer>();
 			expected.add(1);
 			expected.add(2);
-			expected.add(5);
-			expected.add(6);
+			expected.add(3);
+			expected.add(4);
 			expected.add(7);
 			expected.add(8);
 			assertEquals(expected, out);
@@ -187,8 +187,8 @@ public class WGraphTest {
 			ArrayList<Integer> expected = new ArrayList<Integer>();
 			expected.add(1);
 			expected.add(2);
-			expected.add(5);
-			expected.add(6);
+			expected.add(3);
+			expected.add(4);
 			expected.add(7);
 			expected.add(8);
 			assertEquals(expected, out);
@@ -215,8 +215,8 @@ public class WGraphTest {
 			ArrayList<Integer> expected = new ArrayList<Integer>();
 			expected.add(1);
 			expected.add(2);
-			expected.add(5);
-			expected.add(6);
+			expected.add(3);
+			expected.add(4);
 			expected.add(7);
 			expected.add(8);
 			assertEquals(expected, out);

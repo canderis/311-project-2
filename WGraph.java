@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class WGraph {
 	private class Tuple<X, Y> { 
@@ -109,7 +110,8 @@ public class WGraph {
     	Vertex src = this.lookup.get(""+ux+uy);
     	Vertex dst = this.lookup.get(""+vx+vy);
 
-    	return buildOutput(dijkstra(src, dst));
+    	Stack<Vertex> path = dijkstra(src, dst);
+    	return buildOutput(path);
     }
     
     
@@ -136,12 +138,12 @@ public class WGraph {
     		v.addEdge(e);
     	}
     	
-    	ArrayList<Vertex> path = dijkstra(src, s);
+    	Stack<Vertex> path = dijkstra(src, s);
     	if(path.size() == 0) {
     		return new ArrayList<Integer>();
     	}
     	
-    	path.remove(path.size()-1);
+//    	path.pop();
     	
     	this.lookup.remove("-1-1");
     	
@@ -179,13 +181,11 @@ public class WGraph {
     		v.addEdge(e);
     	}
     	
-    	ArrayList<Vertex> path = dijkstra(s1, s2);
+    	Stack<Vertex> path = dijkstra(s1, s2);
     	if(path.size() == 0) {
     		return new ArrayList<Integer>();
     	}
     	
-    	path.remove(path.size()-1);
-    	path.remove(0);
     	
     	this.lookup.remove("-1-1");
     	this.lookup.remove("-2-2");
@@ -213,18 +213,25 @@ public class WGraph {
     
     
 
-    private ArrayList<Integer> buildOutput(ArrayList<Vertex> path){
+    private ArrayList<Integer> buildOutput(Stack<Vertex> path){
     	ArrayList<Integer> output = new ArrayList<Integer>(path.size() * 2);
     	
-    	for(Vertex v: path) {
-    		output.add(v.x);
-    		output.add(v.y);
+//    	for(Vertex v: path) {
+//    		output.add(v.x);
+//    		output.add(v.y);
+//    	}
+    	while(!path.isEmpty()) {
+    		Vertex v = path.pop();
+    		if(this.lookup.containsKey(""+v.x + v.y)) {
+    			output.add(v.x);
+        		output.add(v.y);
+    		}
     	}
     	
     	return output;
     }
     
-    private ArrayList<Vertex> dijkstra(Vertex src, Vertex dst) {
+    private Stack<Vertex> dijkstra(Vertex src, Vertex dst) {
     	HashMap<Vertex, Integer> dist = new HashMap<Vertex, Integer>(this.vertCount);
     	HashMap<Vertex, Vertex> parent = new HashMap<Vertex, Vertex>(this.vertCount);
     	
@@ -237,7 +244,7 @@ public class WGraph {
     	
     	//algo begin
     	dist.put(src, 0);
-    	parent.put(null, src);
+    	parent.put(src, null);
     	
     	q.add(new Tuple<Vertex, Integer>(src, 0));
     	
@@ -258,22 +265,23 @@ public class WGraph {
     			Vertex v = e.dst;
     			if(dist.get(v) > dist.get(u) + e.weight) {
     				dist.replace(v, dist.get(u) + e.weight);
-    				parent.put(u, v);
+    				parent.put(v, u);
     				q.add(new Tuple<Vertex, Integer>(v, dist.get(v)));
     			}
     		}
     	}
     	
 
-    	Vertex next = null;
-    	ArrayList<Vertex> path = new ArrayList<Vertex>();
-    	do {
+    	Vertex next = dst;
+    	Stack<Vertex> path = new Stack<Vertex>();
+    	while(next != src) {
+    		path.push(next);
     		next = parent.get(next);
-    		path.add(next);
     		if(next == null) {
-    			return new ArrayList<Vertex>();
+    			return new Stack<Vertex>();
     		}
-    	}while(next != dst);
+    	};
+    	path.push(src);
     	
     	return path;
     	

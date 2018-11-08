@@ -137,6 +137,10 @@ public class WGraph {
     	}
     	
     	ArrayList<Vertex> path = dijkstra(src, s);
+    	if(path.size() == 0) {
+    		return new ArrayList<Integer>();
+    	}
+    	
     	path.remove(path.size()-1);
     	
     	this.lookup.remove("-1-1");
@@ -176,6 +180,9 @@ public class WGraph {
     	}
     	
     	ArrayList<Vertex> path = dijkstra(s1, s2);
+    	if(path.size() == 0) {
+    		return new ArrayList<Integer>();
+    	}
     	
     	path.remove(path.size()-1);
     	path.remove(0);

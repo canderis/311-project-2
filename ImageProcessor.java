@@ -1,6 +1,12 @@
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 
 public class ImageProcessor {
 
@@ -36,7 +42,35 @@ public class ImageProcessor {
   }
 
   public void writeReduced(int k, String FName) {
+    // Generate a file that is a graph representation of the importance matrix
+    this.graphFromImportance();
 
+    // Find the shortest path between the first and last row (the min-cost vertical cut)
+    WGraph graph = null;
+
+    try {
+      graph = new WGraph("temp_importanceAsGraph.txt");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    ArrayList<Integer> from = new ArrayList<>();
+    from.add(0);
+    from.add(0);
+    from.add(0);
+    from.add(1);
+    from.add(0);
+    from.add(2);
+
+    ArrayList<Integer> to = new ArrayList<>();
+    to.add(3);
+    to.add(0);
+    to.add(3);
+    to.add(1);
+    to.add(3);
+    to.add(2);
+
+    ArrayList<Integer> result = graph.S2S(from, to);
   }
 
   private void generateImageMatrix() throws Exception {
@@ -56,8 +90,8 @@ public class ImageProcessor {
 
   private int pDist(int[] p, int[] q) {
     return (int) Math.pow(p[0] - q[0], 2) +
-           (int) Math.pow(p[1] - q[1], 2) +
-           (int) Math.pow(p[2] - q[2], 2);
+        (int) Math.pow(p[1] - q[1], 2) +
+        (int) Math.pow(p[2] - q[2], 2);
   }
 
   private int importance(int i, int j) {
@@ -98,5 +132,40 @@ public class ImageProcessor {
     }
 
     return pDist(p, q);
+  }
+
+  private void graphFromImportance() {
+    try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+        new FileOutputStream("temp_importanceAsGraph.txt"), StandardCharsets.UTF_8))) {
+
+      int numVertices = (this.height + 1) * this.width;
+      int numEdges = 0;
+      int edgesToAdd;
+
+      for (int col = 0; col < this.width; col++) {
+        boolean isBorderColumn = col == 0 || col == this.width - 1;
+        edgesToAdd = isBorderColumn ? 2 : 3;
+        numEdges += this.height * edgesToAdd;
+      }
+
+      writer.write(numVertices + "\n");
+      writer.write(numEdges + "\n");
+
+      for (int col = 0; col < this.width; col++) {
+        for (int row = 0; row < this.height; row++) {
+          writer.write(row + " " + col + " " + (row + 1) + " " + col + "\n");
+          if (col == 0) {
+            writer.write(row + " " + col + " " + (row + 1) + " " + (col + 1) + "\n");
+          } else if (col == width - 1) {
+            writer.write(row + " " + col + " " + (row + 1) + " " + (col - 1) + "\n");
+          } else {
+            writer.write(row + " " + col + " " + (row + 1) + " " + (col + 1) + "\n");
+            writer.write(row + " " + col + " " + (row + 1) + " " + (col - 1) + "\n");
+          }
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

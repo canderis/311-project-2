@@ -18,6 +18,6 @@ public class ImageProcessorTest {
   @Test
   public void writeReducedTest() {
     ImageProcessor imageProcessor = new ImageProcessor("testImage.txt");
-    imageProcessor.writeReduced(1, "reduced.txt");
+    imageProcessor.writeReduced(2, "reduced.txt");
   }
 }

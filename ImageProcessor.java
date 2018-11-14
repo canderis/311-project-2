@@ -33,6 +33,7 @@ public class ImageProcessor {
 
   public void writeReduced(int k, String FName) {
     for (int cuts = 0; cuts < k; cuts++) {
+      // Compute the importance matrix I
       this.computeImportance();
 
       // Generate a file that is a graph representation of the importance matrix
@@ -42,8 +43,7 @@ public class ImageProcessor {
       this.performCut();
     }
 
-//    this.writeReducedToFile();
-    // TODO: and write to output file
+    this.writeReducedToFile(FName);
   }
 
   private void generateImageMatrix() throws Exception {
@@ -62,7 +62,6 @@ public class ImageProcessor {
   }
 
   private void computeImportance() {
-    // Compute the importance matrix I
     I = new ArrayList<>();
 
     for (int i = 0; i < height; i++) {
@@ -95,12 +94,12 @@ public class ImageProcessor {
           writer.write(row + " " + col + " " + (row + 1) + " " + col + " " + this.I.get(row).get(col) + "\n");
 
           if (col == 0) {
-            writer.write(row + " " + col + " " + (row + 1) + " " + (col + 1) + " " + this.I.get(row).get(col + 1) +  "\n");
+            writer.write(row + " " + col + " " + (row + 1) + " " + (col + 1) + " " + this.I.get(row).get(col) +  "\n");
           } else if (col == width - 1) {
-            writer.write(row + " " + col + " " + (row + 1) + " " + (col - 1) + " " + this.I.get(row).get(col - 1) + "\n");
+            writer.write(row + " " + col + " " + (row + 1) + " " + (col - 1) + " " + this.I.get(row).get(col) + "\n");
           } else {
-            writer.write(row + " " + col + " " + (row + 1) + " " + (col + 1) + " " + this.I.get(row).get(col + 1) + "\n");
-            writer.write(row + " " + col + " " + (row + 1) + " " + (col - 1) + " " + this.I.get(row).get(col - 1) + "\n");
+            writer.write(row + " " + col + " " + (row + 1) + " " + (col + 1) + " " + this.I.get(row).get(col) + "\n");
+            writer.write(row + " " + col + " " + (row + 1) + " " + (col - 1) + " " + this.I.get(row).get(col) + "\n");
           }
         }
       }
@@ -155,6 +154,25 @@ public class ImageProcessor {
 
     this.M = tempM;
     this.width = this.width - 1;
+  }
+
+  private void writeReducedToFile(String FName) {
+    try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+        new FileOutputStream(FName), StandardCharsets.UTF_8))) {
+
+      writer.write(this.height + "\n");
+      writer.write(this.width + "\n");
+
+      for (int i = 0; i < this.height; i++) {
+        for (int j = 0; j < this.width; j++) {
+          writer.write(this.M[i][j][0] + " " + this.M[i][j][1] + " " + this.M[i][j][2]);
+          if (j != this.width - 1) writer.write(" ");
+        }
+        writer.write("\n");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   private int importance(int i, int j) {

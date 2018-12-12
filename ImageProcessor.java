@@ -31,7 +31,22 @@ public class ImageProcessor {
     return this.I;
   }
 
+  private int[][][] copyOf3Dim(int[][][] array) {
+    int[][][] copy;
+    copy = new int[array.length][][];
+    for (int i = 0; i < array.length; i++) {
+      copy[i] = new int[array[i].length][];
+      for (int j = 0; j < array[i].length; j++) {
+        copy[i][j] = new int[array[i][j].length];
+        System.arraycopy(array[i][j], 0, copy[i][j], 0, array[i][j].length);
+      }
+    }
+    return copy;
+  }
+
   public void writeReduced(int k, String FName) {
+    int[][][] tempM = copyOf3Dim(M);
+    int tempWidth = this.width;
     for (int cuts = 0; cuts < k; cuts++) {
       // Compute the importance matrix I
       this.computeImportance();
@@ -44,6 +59,8 @@ public class ImageProcessor {
     }
 
     this.writeReducedToFile(FName);
+    this.M = copyOf3Dim(tempM);
+    this.width = tempWidth;
   }
 
   private void generateImageMatrix() throws Exception {
@@ -123,14 +140,14 @@ public class ImageProcessor {
     for (int m = 0; m < this.width; m++) {
       from.add(0);
       from.add(m);
-      to.add(this.height - 1);
+      to.add(this.height);
       to.add(m);
     }
 
     ArrayList<Integer> minCostVerticalCut = graph.S2S(from, to);
 
     // Remove the pixels from the image
-    for (int i = 0; i < minCostVerticalCut.size(); i += 2) {
+    for (int i = 0; i < minCostVerticalCut.size() - 2; i += 2) {
       int x = minCostVerticalCut.get(i);
       int y = minCostVerticalCut.get(i + 1);
 
@@ -141,7 +158,7 @@ public class ImageProcessor {
     int[][][] tempM = new int[this.height][this.width - 1][3];
 
     for (int i = 0; i < this.height; i++) {
-      for (int j = 0, m = 0; j < this.width; j++,  m++) {
+      for (int j = 0, m = 0; j < this.width && m < this.width - 1; j++,  m++) {
         if (M[i][j] != null) {
           for (int p = 0; p < 3; p++) {
             tempM[i][m][p] = this.M[i][j][p];

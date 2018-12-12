@@ -74,14 +74,14 @@ public class WGraph {
     		int weight = scanner.nextInt();
     		
     		
-    		String srcKey = "" + sx + sy;
+    		String srcKey = "" + sx + "-"+ sy;
     		Vertex src = lookup.get(srcKey);
     		if(src == null) {
     			src = new Vertex(sx, sy);
     			lookup.put(srcKey, src);
     		}
     		
-    		String dstKey = "" + dx + dy;
+    		String dstKey = "" + dx + "-" + dy;
     		Vertex dst = lookup.get(dstKey);
     		
     		if(dst == null) {
@@ -107,8 +107,8 @@ public class WGraph {
     //       the x-coordinate and y-coordinate of the i/2-th vertex
     //       in the returned path (path is an ordered sequence of vertices)
     public ArrayList<Integer> V2V(int ux, int uy, int vx, int vy){
-    	Vertex src = this.lookup.get(""+ux+uy);
-    	Vertex dst = this.lookup.get(""+vx+vy);
+    	Vertex src = this.lookup.get(""+ux+"-"+uy);
+    	Vertex dst = this.lookup.get(""+vx+"-"+vy);
 
     	Stack<Vertex> path = dijkstra(src, dst);
     	return buildOutput(path);
@@ -126,14 +126,14 @@ public class WGraph {
     //       in the set S.
     // post: same structure as the last method’s post.
     public ArrayList<Integer> V2S(int ux, int uy, ArrayList<Integer> S){
-    	Vertex src = this.lookup.get(""+ux+uy);
+    	Vertex src = this.lookup.get(""+ux+"-"+uy);
     	
     	HashMap<Vertex, Edge> dummyEdges = new HashMap<Vertex, Edge>(S.size()/2);
     	Vertex s = new Vertex(-1, -1);
-    	this.lookup.put("-1-1", s);
+    	this.lookup.put("-1--1", s);
     	for(int i = 0; i < S.size(); i+=2) {    		
     		Edge e = new Edge(s, 0 );
-    		Vertex v = this.lookup.get(""+S.get(i)+S.get(i+1));
+    		Vertex v = this.lookup.get(""+S.get(i)+"-"+S.get(i+1));
     		dummyEdges.put(v, e);
     		v.addEdge(e);
     	}
@@ -145,7 +145,7 @@ public class WGraph {
     	
 //    	path.pop();
     	
-    	this.lookup.remove("-1-1");
+    	this.lookup.remove("-1--1");
     	
     	for(Vertex v : dummyEdges.keySet()) {
     		v.removeEdge(dummyEdges.get(v));
@@ -165,18 +165,18 @@ public class WGraph {
     	//Vertex src = this.lookup.get(""+ux+uy);
     	
     	Vertex s1 = new Vertex(-1, -1);
-    	this.lookup.put("-1-1", s1);
+    	this.lookup.put("-1--1", s1);
     	for(int i = 0; i < S1.size(); i+=2) {
-    		Edge e = new Edge(this.lookup.get(""+S1.get(i)+S1.get(i+1)), 0 );
+    		Edge e = new Edge(this.lookup.get(""+S1.get(i)+"-"+S1.get(i+1)), 0 );
     		s1.addEdge(e);
     	}
     	
     	Vertex s2 = new Vertex(-2, -2);
     	HashMap<Vertex, Edge> dummyEdges = new HashMap<Vertex, Edge>(S2.size()/2);
-    	this.lookup.put("-2-2", s2);
+    	this.lookup.put("-2--2", s2);
     	for(int i = 0; i < S2.size(); i+=2) {
     		Edge e = new Edge(s2, 0 );
-    		Vertex v = this.lookup.get(""+S2.get(i)+S2.get(i+1));
+    		Vertex v = this.lookup.get(""+S2.get(i)+"-"+S2.get(i+1));
     		dummyEdges.put(v, e);
     		v.addEdge(e);
     	}
@@ -187,8 +187,8 @@ public class WGraph {
     	}
     	
     	
-    	this.lookup.remove("-1-1");
-    	this.lookup.remove("-2-2");
+    	this.lookup.remove("-1--1");
+    	this.lookup.remove("-2--2");
     	
     	for(Vertex v : dummyEdges.keySet()) {
     		v.removeEdge(dummyEdges.get(v));
@@ -203,7 +203,7 @@ public class WGraph {
     	for(String key : this.lookup.keySet()) {
     		s += key;
     		for(Edge e: this.lookup.get(key).edges) {
-    			s += "\t" + e.dst.x + e.dst.y;
+    			s += "\t" + e.dst.x + e.dst.y + " " + e.weight;
     		}
     		s+= "\n";
     	}
@@ -222,7 +222,7 @@ public class WGraph {
 //    	}
     	while(!path.isEmpty()) {
     		Vertex v = path.pop();
-    		if(this.lookup.containsKey(""+v.x + v.y)) {
+    		if(this.lookup.containsKey(""+v.x +"-"+ v.y)) {
     			output.add(v.x);
         		output.add(v.y);
     		}
